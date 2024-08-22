@@ -9,8 +9,6 @@ export const Transactions: TransactionsComponent = ({ transactions }) => {
 
   const setTransactionApproval = useCallback<SetTransactionApprovalFunction>(
     async ({ transactionId, newValue }) => {
-      // clearCacheByEndpoint(["setTransactionApproval"])
-      console.log(newValue, "New value")
       await fetchWithCache<void, SetTransactionApprovalParams>("setTransactionApproval", {
         transactionId,
         value: newValue,

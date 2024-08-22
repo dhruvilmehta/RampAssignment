@@ -25,17 +25,19 @@ export function useCustomFetch() {
                 }
               })
 
-              cache.current.set(key, JSON.stringify(parsedValue))
-
               if (employeeId) {
                 let employeeTransactions = cache.current.get(`transactionsByEmployee@{"employeeId":"${employeeId}"}`)
+                if (!employeeTransactions) return;
+                cache.current.set(key, JSON.stringify(parsedValue))
                 const parsedEmployeeTransactions = JSON.parse(employeeTransactions || "{}")
 
+                console.log("start ", parsedEmployeeTransactions)
                 parsedEmployeeTransactions.forEach((val: any) => {
                   if (val.id === (params as any).transactionId) {
                     val.approved = (params as any).value
                   }
                 });
+                console.log("end ")
                 cache.current.set(`transactionsByEmployee@{"employeeId":"${employeeId}"}`, JSON.stringify(parsedEmployeeTransactions))
               }
             }
@@ -43,7 +45,6 @@ export function useCustomFetch() {
         }
         const cacheKey = getCacheKey(endpoint, params)
         const cacheResponse = cache?.current.get(cacheKey)
-
         if (cacheResponse) {
           const data = JSON.parse(cacheResponse)
           return data as Promise<TData>
